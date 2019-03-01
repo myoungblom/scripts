@@ -11,7 +11,7 @@ Ouputs length of contigs in a draft genome fasta file
 Requirements: Biopython
 Usage: contigLength.py <inputfile.fasta> <outputfile>
 
-### mummerToNexus.py
+### mummerToFasta.py
 
 
 ### removeFromFasta.py
