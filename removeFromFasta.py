@@ -12,7 +12,7 @@ from Bio import SeqIO
 
 # check for correct arguments
 if len(sys.argv) <= 3:
-	print("Usage: removeFromFasta_MY.py <fasta file> <output fasta>  <ids/txt file to remove>")
+	print("Usage: removeFromFasta.py <fasta file> <output fasta>  <ids/txt file to remove>")
 	sys.exit(0)
 
 # check if id's to remove are in text file or as arguments
