@@ -10,7 +10,7 @@ from Bio import SeqIO
 
 # check for correct arguments
 if len(sys.argv) != 3:
-	print("Usage: ContigLength.py <inputfile.fasta> <outputfile>")
+	print("Usage: contigLength.py <inputfile.fasta> <outputfile>")
 	sys.exit(0)
 
 input_file = sys.argv[1]
