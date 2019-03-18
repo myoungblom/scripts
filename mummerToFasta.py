@@ -3,6 +3,8 @@
 import sys
 from Bio import SeqIO
 import itertools
+from collections import OrderedDict
+from Bio.Seq import MutableSeq
 
 #######
 # This file takes in mummer output from 'show-snps -T' and produces a fasta sequence
@@ -26,17 +28,22 @@ InFileName = sys.argv[1] #SNP table from nucmer & show-snps
 OutFileName = sys.argv[2] #Fasta format
 RefName = sys.argv[3] #Reference sequence
 
-InFile = open(InFileName, 'r') #read mummer file
-RefFile = open(RefName, 'r') #read reference file
 OutFile = open(OutFileName, 'w') #write output file
 
-# check that correct reference has been provided &
-# that reference sequence only has 1 contig
-sequence = SeqIO.parse(RefFile, "fasta")
-if len(list(sequence)) != 1:
-        print("Reference sequence must contain only 1 contig")
-        sys.exit(0)
+# verify reference sequence has only 1 contig
+print("Reading reference sequence ...")
+seq = SeqIO.parse(RefName, "fasta")
+if len(list(seq)) > 1:
+	print("Reference sequence must contain only 1 contig")
+	sys.exit(0)
 
+# write reference sequence to outfile, to be edited according to SNP table
+for ref_seq in SeqIO.parse(RefName, "fasta"):
+	print("Writing reference sequence: "+ ref_seq.id + " to output file")	
+	ref_seq.id = OutFileName.split(".")[0]
+	ref_seq.description = OutFileName.split(".")[0]
+	SeqIO.write(ref_seq, OutFile, "fasta")
+	print("New sequence identifier: " + ref_seq.id)
 
 # parse mummer input file, make list of all SNPs & positions in reference
 RefPos = [] # positions of SNPs in reference
@@ -44,56 +51,29 @@ SNPs = [] # SNPs
 
 print("Parsing SNP table ...")
 
-for line in InFile:
-	if (line.split('\t')[0]).isdigit(): # start parsing SNP table after headers
-		wordlist = line.split('\t') # create list of values from each line
-		if wordlist[1] != '.':	    # skip insertion sites
-			RefPos.append(wordlist[0]) # make list of positions in reference with SNPs/deletions
-			if wordlist[2] == '.':	   # change deletions to '-' for continuity with RGA
-				SNPs.append('-')
-			else:
-				SNPs.append(wordlist[2]) # make list of SNPs
-print(RefPos[:4])
-print(SNPs[:4])
+with open(InFileName, 'r') as InFile:
+	for line in InFile:
+		if (line.split('\t')[0]).isdigit(): # start parsing SNP table after headers
+			wordlist = line.split('\t') # create list of values from each line
+			if wordlist[1] != '.':	    # skip insertion sites
+				RefPos.append(wordlist[0]) # make list of positions in reference with SNPs/deletions
+				if wordlist[2] == '.':	   # change deletions to '-' for continuity with RGA
+					SNPs.append('-')
+				else:
+					SNPs.append(wordlist[2]) # make list of SNPs
 
 # create dictionary for each position:nt
 print("Creating SNP dictionary ...")
-SNP_dict = dict(itertools.izip(RefPos, SNPs))
+SNP_dict = OrderedDict(itertools.izip(RefPos, SNPs))
 
-# write reference sequence to ouput file, to be edited
-print("Writing sequence to outfile ...")
-OutFile.write('>' + OutFileName.split(".")[0] + '\n')
-print("	Writing output header ...")
-
-for ref_seq in SeqIO.parse(RefName, "fasta"):
-	OutFile.write(ref_seq)
-print("		Writing reference seq to outfile ...")
-
-
-
-
-
-
-#	OutFile.write(sequence)
-	
-#	if len(sequence) != 1:
-#	else:
-#		SeqIO.write(sequence, OUtFile, "fasta")
-#		output.close()
-
-
-# parse mummer input file
-
-
-
-# read reference sequence
-# write entire reference sequence to output file?
-# 	or write reference as you go until you hit position in column1?
-# for row in columns
-#	if column2 == '.' skip
-#	change position column1 to column3 in reference
-#		if letter change to letter
-#		if '.' change to '-'
 # edit reference sequence based on SNPs/gaps in mummer output
-# ignore insertions compared to reference
-# write new sequence in fasta format
+for edit_seq in SeqIO.parse(OutFile, "fasta"):
+	edit_seq = MutableSeq(edit_seq) 
+for pos, snp in SNP_dict.iteritems():
+	print(pos)
+	print(snp)
+	edit_seq[pos-1] = snp
+
+
+
+
