@@ -7,8 +7,8 @@ Current Versions:
 	Biopython 1.63
 
 ### contigLength.py
-Ouputs length of contigs in a draft genome fasta file
-Requirements: Biopython
+Ouputs length of contigs in a draft genome fasta file\
+Requirements: Biopython\
 Usage: contigLength.py <inputfile.fasta> <outputfile>
 
 ### mummerToFasta.py
