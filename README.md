@@ -15,11 +15,16 @@ Usage: contigLength.py <inputfile.fasta> <outputfile>
 
 
 ### removeFromFasta.py
-Removes specified sequence(s) from fasta file.
-Requirements: Biopython
-Usage: removeFromFasta.py <inputfile.fasta> <output fasta> <ids or text file>
+Removes specified sequence(s) from fasta file\
+Requirements: Biopython\
+Usage: removeFromFasta.py <inputfile.fasta> <output fasta> <ids or text file to remove>
 
 ### splitFasta.py
-Splits multifasta file into individual fasta files.
-Requirements: Biopython
+Splits multifasta file into individual fasta files\
+Requirements: Biopython\
 Usage: splitFasta.py <inputfile.fasta>
+
+### pullFromFasta.py
+Pulls specific sequences from multifasta file\
+Requirements: Biopython\
+Usage: pullFromFasta.py <inputfil.fasta> <ids or text file to remove>
