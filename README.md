@@ -27,4 +27,9 @@ Usage: splitFasta.py <inputfile.fasta>
 ### pullFromFasta.py
 Pulls specific sequences from multifasta file\
 Requirements: Biopython\
-Usage: pullFromFasta.py <inputfil.fasta> <ids or text file to remove>
+Usage: pullFromFasta.py <inputfile.fasta> <ids or text file to remove>
+
+### printSeq.py
+Prints base at given position in fasta file sequence\
+Requirements: Biopython\
+Usage: printSeq.py <inputfile.fasta> <position>

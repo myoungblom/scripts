@@ -7,6 +7,7 @@ from Bio import SeqIO
 ###############
 # This script removes seqences from a FASTA alignment
 # takes id's to remove as arguments or a text file containing id's to remove
+# ** headers must not contain spaces (:%s/\ //g to remove spaces)**
 ##################
 
 
