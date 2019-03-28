@@ -33,3 +33,8 @@ Usage: pullFromFasta.py <inputfile.fasta> <ids or text file to remove>
 Prints base at given position in fasta file sequence\
 Requirements: Biopython\
 Usage: printSeq.py <inputfile.fasta> <position>
+
+### gyrBTyping.py
+Identifys viridans group streptococci based on DNA gyrase subunit B amino acid sequences\
+Requirements: Bipython\
+Usage: gyrBTyping.py <inputfile.fasta> <outputfile>
