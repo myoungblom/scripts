@@ -9,7 +9,7 @@ Current Versions:
 ### contigLength.py
 Ouputs length of contigs in a draft genome fasta file\
 Requirements: Biopython\
-Usage: contigLength.py inputfile.fasta outputfile\
+Usage: contigLength.py inputfile.fasta outputfile
 
 ### mummerToFasta.py
 Takes in mummer output from 'show-snps -T' and produces fasta sequence using reference\
@@ -19,24 +19,24 @@ Usage: mummerToFasta.py SNPfile outputfile reference
 ### removeFromFasta.py
 Removes specified sequence(s) from fasta file\
 Requirements: Biopython\
-Usage: removeFromFasta.py inputfile.fasta output fasta ids or text file to remove\
+Usage: removeFromFasta.py inputfile.fasta output fasta ids or text file to remove
 
 ### splitFasta.py
 Splits multifasta file into individual fasta files\
 Requirements: Biopython\
-Usage: splitFasta.py inputfile.fasta\
+Usage: splitFasta.py inputfile.fasta
 
 ### pullFromFasta.py
 Pulls specific sequence(s) from multifasta file\
 Requirements: Biopython\
-Usage: pullFromFasta.py inputfile.fasta ids or text file to remove\
+Usage: pullFromFasta.py inputfile.fasta ids or text file to remove
 
 ### printSeq.py
 Prints base at given position in fasta file sequence\
 Requirements: Biopython\
-Usage: printSeq.py inputfile.fasta position\
+Usage: printSeq.py inputfile.fasta position
 
 ### gyrBTyping.py
 Identifys viridans group streptococci based on DNA gyrase subunit B amino acid sequences\
 Requirements: Bipython\
-Usage: gyrBTyping.py inputfile.fasta outputfile\
+Usage: gyrBTyping.py inputfile.fasta outputfile
