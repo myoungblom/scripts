@@ -4,7 +4,8 @@ import sys
 from Bio import SeqIO
 import itertools
 from collections import OrderedDict
-from Bio.Seq import MutableSeq
+import textwrap
+import os
 
 #######
 # This file takes in mummer output from 'show-snps -T' and produces a fasta sequence
@@ -26,9 +27,10 @@ if len(sys.argv) != 4:
 
 InFileName = sys.argv[1] #SNP table from nucmer & show-snps
 OutFileName = sys.argv[2] #Fasta format
+TmpFile = OutFileName.split(".")[0] + ".tmp" #Temporary file
 RefName = sys.argv[3] #Reference sequence
 
-OutFile = open(OutFileName, 'w') #write output file
+#OutFile = open(OutFileName, 'w') #write output file
 
 # verify reference sequence has only 1 contig
 print("Reading reference sequence ...")
@@ -37,20 +39,11 @@ if len(list(seq)) > 1:
 	print("Reference sequence must contain only 1 contig")
 	sys.exit(0)
 
-# write reference sequence to outfile, to be edited according to SNP table
-for ref_seq in SeqIO.parse(RefName, "fasta"):
-	print("Writing reference sequence: "+ ref_seq.id + " to output file")	
-	ref_seq.id = OutFileName.split(".")[0]
-	ref_seq.description = OutFileName.split(".")[0]
-	SeqIO.write(ref_seq, OutFile, "fasta")
-	print("New sequence identifier: " + ref_seq.id)
-
 # parse mummer input file, make list of all SNPs & positions in reference
 RefPos = [] # positions of SNPs in reference
 SNPs = [] # SNPs
 
 print("Parsing SNP table ...")
-
 with open(InFileName, 'r') as InFile:
 	for line in InFile:
 		if (line.split('\t')[0]).isdigit(): # start parsing SNP table after headers
@@ -66,14 +59,33 @@ with open(InFileName, 'r') as InFile:
 print("Creating SNP dictionary ...")
 SNP_dict = OrderedDict(itertools.izip(RefPos, SNPs))
 
-# edit reference sequence based on SNPs/gaps in mummer output
-for edit_seq in SeqIO.parse(OutFile, "fasta"):
-	edit_seq = MutableSeq(edit_seq) 
-for pos, snp in SNP_dict.iteritems():
-	print(pos)
-	print(snp)
-	edit_seq[pos-1] = snp
+# write reference sequence to temp file, to be edited according to SNP table
+for ref_seq in SeqIO.parse(RefName, "fasta"):
+        print("Writing reference sequence: "+ ref_seq.id + " to temporary file")
+        ref_seq.id = OutFileName.split(".")[0] # change seq id to match filename
+        ref_seq.description = OutFileName.split(".")[0]
+        SeqIO.write(ref_seq, TmpFile, "fasta")
+        print("New sequence identifier: " + ref_seq.id)
 
+# edit reference sequence in temp file based on SNPs/gaps in mummer output, write to output file
+print("Making SNPs in reference sequence ...")
+OutFile = open(OutFileName, 'w')
+with open(TmpFile, 'r') as edit_seq:
+	sequence = edit_seq.read()
+	header, seq = sequence.split('\n', 1)
+	seq = seq.replace('\n','') + '\n'
+	seq = list(seq)
+	for pos, snp in SNP_dict.iteritems():
+		seq[int(pos) - 1] = str(snp)
+	seq = "".join(seq)
+	print("Writing edited sequence to outfile ...")
+	OutFile.write(header + '\n')
+#	wrapped_seq = textwrap.fill(seq, width=60)
+#	print(wrapped_seq[:100])
+#	OutFile.write(wrapped_seq)
+	OutFile.write(seq)
+		
 
-
-
+OutFile.close()
+os.remove(TmpFile)
+print("Deleting temporary file ...")	
