@@ -12,7 +12,9 @@ Requirements: Biopython\
 Usage: contigLength.py inputfile.fasta outputfile\
 
 ### mummerToFasta.py
-
+Takes in mummer output from 'show-snps -T' and produces fasta sequence using reference\
+Requirements: Biopython\
+Usage: mummerToFasta.py SNPfile outputfile reference
 
 ### removeFromFasta.py
 Removes specified sequence(s) from fasta file\
@@ -25,7 +27,7 @@ Requirements: Biopython\
 Usage: splitFasta.py inputfile.fasta\
 
 ### pullFromFasta.py
-Pulls specific sequences from multifasta file\
+Pulls specific sequence(s) from multifasta file\
 Requirements: Biopython\
 Usage: pullFromFasta.py inputfile.fasta ids or text file to remove\
 
