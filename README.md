@@ -37,6 +37,12 @@ Requirements: Biopython\
 Usage: printSeq.py inputfile.fasta position
 
 ### gyrBTyping.py
-Identifys viridans group streptococci based on DNA gyrase subunit B amino acid sequences\
-Requirements: Bipython\
+Identifies viridans group streptococci based on DNA gyrase subunit B amino acid sequences\
+Requirements: Biopython\
 Usage: gyrBTyping.py inputfile.fasta outputfile
+
+### aasTyping.py
+Identifies S. saprophyticus sequences in mutli-fasta, reference-guided alignment file which\
+have the ancestral AAS allele ("A" at position 1,811,777)
+Requirements: Biopython\
+Usage: aasTyping.py inputfile.fasta
