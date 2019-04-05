@@ -20,12 +20,14 @@ InFileName = sys.argv[1]
 OutFileName = sys.argv[2]
 
 # create id#:species dictionary
-species = {'9':'mitis','10':'oralis','11':'parasanguinis','19':'infantis','20':'australis','21':'sanguinis','22':'anginosus','23':'constellatus','24':'salivarius','25':'vestibularis', '26':'Species cannot be determined by gyrB typing','27':'Sequence is too short for analysis'}
+species = {'9':'mitis','10':'oralis','11':'parasanguinis','19':'infantis','20':'australis','21':'sanguinis',\
+'22':'anginosus','23':'constellatus','24':'salivarius','25':'vestibularis', '26':'Species cannot be determined by gyrB typing',\
+'27':'Sequence is too short for analysis'}
 
 # assign species via gyrB typing flow chart (see paper referenced above)
 gyrb_ident = {}
 for seq in SeqIO.parse(InFileName, "fasta"):
-	if len(seq) > 502:
+	if len(seq) >= 502:
 		if seq[371-1] == 'M' and seq[503-1] == 'L':
 			if seq[494-1] == 'S':
 				gyrb_id = 9
