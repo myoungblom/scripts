@@ -74,7 +74,7 @@ with open(TmpFile, 'r') as temp_seq:
 	sequence = sequence.replace('\n','') + '\n'
 	sequence = list(sequence)
 	for Pos, SNP in SNP_dict.iteritems():
-		seq[int(Pos) - 1] = str(SNP)
+		sequence[int(Pos) - 1] = str(SNP)
 	sequence = "".join(sequence)
 	print("Writing edited sequence to outfile ...")
 	OutFile.write(header + '\n')
