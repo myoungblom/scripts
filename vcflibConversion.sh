@@ -35,7 +35,7 @@ cat "$p"_header.vcf "$vcflibFile"_headerless.vcf > "$vcflibFile"
 
 # remove ambiguous (*) and non-biallelic (,) sites
 sed -i '/\*/d' "$vcflibFile"
-sed -i '/\,/d' "$vcflibFile"
+#sed -i '/\,/d' "$vcflibFile"
 
 # change reference name from "1" to referenceName
 sed -i "s/^\s*1/$2/g" "$vcflibFile"

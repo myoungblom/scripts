@@ -14,22 +14,12 @@ import subprocess
 
 # check for correct commandline arguments
 if len(sys.argv) != 4:
-    print("Usage: vcflibInput.py <scoaryTraits.csv> <snpvcf.vcf> <headerToParse>")
-    sys.exit(0)
-
-# check for tabix index file
-tabix = os.path.isfile('./'+sys.argv[2]+'.gz.tbi')
-if not tabix:
-    print("Tabix index file of vcf not found: tabix -p vcf <snpvcf.vcf>")
+    print("Usage: scoaryToVcflibFst.py <scoaryTraits.csv> <snpvcf.vcf> <headerToParse>")
     sys.exit(0)
 
 scoary = sys.argv[1]
 vcfFile = sys.argv[2]
 header = str(sys.argv[3])
-#outBackground = header+"_background.csv"
-#outB = open(outBackground, 'w')
-#outTarget = header+"_target.csv"
-#outT = open(outTarget, 'w')
 
 backgroundList = []
 targetList = []
@@ -40,6 +30,7 @@ indexes = {}
 with open(scoary, 'r') as scoaryFile:
     for line in scoaryFile:
         line = line.strip("\n")
+        line = line.strip("\r")
         parser = line.split(",")
         if line.startswith(","):
             indexed = parser.index(header)
@@ -55,15 +46,15 @@ with open(vcfFile, 'r') as vcf:
         if line.startswith("#CHROM"):
             parser = line.split("\t")
             for item in parser[9:]:
-                indexes[item] = (parser.index(item))-8
+                indexes[item] = (parser.index(item))
 
 # read from phenotypes dictionary, write from indexes dictionary into background
 # and target lists
 for key, value in phenotypes.items():
     if value == "0":
-        backgroundList.append(str(indexes[key]))
+        backgroundList.append(str(indexes[key]-9))
     elif value == "1":
-        targetList.append(str(indexes[key]))
+        targetList.append(str(indexes[key]-9))
 
 # join lists to make csv
 background = ",".join(backgroundList)
@@ -72,5 +63,5 @@ target = ",".join(targetList)
 # use background and target lists to run vcflib wcFst
 outfile = header+"_wcFst.txt"
 with open(outfile, 'w') as output:
-    subprocess.run("/opt/PepPrograms/vcflib/bin/wcFst --target "+target+" --background "\
-        +background+" --file "+vcfFile+" --type GT", shell=True, stdout=output)
+    subprocess.call(["/opt/PepPrograms/vcflib/bin/wcFst" ,"--target",target,"--background",\
+        background,"--file",vcfFile,"--type", "GT"], stdout=output)
