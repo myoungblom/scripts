@@ -27,11 +27,11 @@ for i in range(total):
 # run 100 Fst calculations based on target size
 for i in range(100):
     output = open(str(i)+"_wcFst.txt", 'w')
-    target = np.random.choice(isolate, size=targetNum, replace=False)
+    target = list(np.random.choice(isolate, size=targetNum, replace=False))
     background = []
     for iso in isolate:
-        if iso not in isolate:
-            background.append(iso)
+        if iso not in target:
+           background.append(iso)
     targetArg = ",".join(str(x) for x in list(target))
     backgroundArg = ",".join(str(x) for x in list(background))
     subprocess.call(["/opt/PepPrograms/vcflib/bin/wcFst","--target",targetArg,"--background",\
@@ -39,13 +39,13 @@ for i in range(100):
     output.close()
 
 # find maximum wcFst value in null distribution
-#allFst = []
-#for fstFile in range(100)+"_wcFst.txt":
-#    with open(fstFile, 'r') as f:
-#        for line in f:
-#            line = line.strip("\n")
-#            info = line.split("\t")
-#            allFst.append(info[4])
+allFst = []
+for i in range(100):
+    with open(str(i)+"_wcFst.txt", "r") as f:
+        for line in f:
+            line = line.strip("\n")
+            info = line.split("\t")
+            allFst.append(info[4])
 
-#maxFst = max(allFst)
-#print(maxFst)
+maxFst = max(allFst)
+print("Max null value: "+maxFst)

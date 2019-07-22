@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 
 import sys
-import os.path
+import os
 import itertools
 import subprocess
+import numpy as np
 
 #####
 # This script takes in a scoary traits file and uses it to 
 # bin isolates into 'target' and 'background' for use with vcflib-wcFst.
-# Requirements: vcf file must be correctly formmatted, 
-# tabix index file of vcf file must be in cwd (tabix -p vcf <file.vcf.gz)
+# Will also permute data to create null distribution from which
+# Fst outliers can be identified.
+# Requirements: vcf file must be formmated for vcflib,
+# must have associated tabix index file (see vcflibConversion.sh) 
 #####
 
 # check for correct commandline arguments
@@ -27,6 +30,7 @@ phenotypes = {}
 indexes = {}
 
 # make dictionary with binary phenotypes from scoary traits file
+total = 0
 with open(scoary, 'r') as scoaryFile:
     for line in scoaryFile:
         line = line.strip("\n")
@@ -35,6 +39,7 @@ with open(scoary, 'r') as scoaryFile:
         if line.startswith(","):
             indexed = parser.index(header)
         elif not line.startswith(","):
+            total += 1
             value = parser[indexed]
             isolate = parser[0]
             phenotypes[isolate] = value
@@ -55,13 +60,55 @@ for key, value in phenotypes.items():
         backgroundList.append(str(indexes[key]-9))
     elif value == "1":
         targetList.append(str(indexes[key]-9))
+targetNum = len(targetList)
 
 # join lists to make csv
-background = ",".join(backgroundList)
-target = ",".join(targetList)
+backgroundArg = ",".join(backgroundList)
+targetArg = ",".join(targetList)
 
 # use background and target lists to run vcflib wcFst
 outfile = header+"_wcFst.txt"
-with open(outfile, 'w') as output:
-    subprocess.call(["/opt/PepPrograms/vcflib/bin/wcFst" ,"--target",target,"--background",\
-        background,"--file",vcfFile,"--type", "GT"], stdout=output)
+with open(outfile, 'w') as fstOutput:
+    subprocess.call(["/opt/PepPrograms/vcflib/bin/wcFst" ,"--target",targetArg,"--background",\
+        backgroundArg,"--file",vcfFile,"--type", "GT"], stdout=fstOutput)
+
+# make list of vcf indices
+isolateList = []
+for i in range(total):
+    isolateList.append(i)
+
+# run 100 Fst permutations based on target size
+for i in range(100):
+    nullOutput = open(str(i)+"_wcFst.txt", 'w')
+    target = list(np.random.choice(isolateList, size=targetNum, replace=False))
+    background = []
+    for iso in isolateList:
+        if iso not in target:
+           background.append(iso)
+    targetNull = ",".join(str(x) for x in list(target))
+    backgroundNull = ",".join(str(x) for x in list(background))
+    subprocess.call(["/opt/PepPrograms/vcflib/bin/wcFst","--target",targetNull,"--background",\
+            backgroundNull, "--file", vcfFile, "--type", "GT"], stdout=nullOutput)
+    nullOutput.close()
+
+# find maximum wcFst value in null distribution
+for i in range(100):
+    allFst = []
+    with open(str(i)+"_wcFst.txt", "r") as f:
+        for line in f:
+            line = line.strip("\n")
+            info = line.split("\t")
+            allFst.append(info[4])
+
+# write summary file for null distribution
+nullMin = min(allFst)
+nullMax = max(allFst)
+
+with open(header+"_nullWcFst.txt",'w') as nullOut:
+    nullOut.write("Min\tMax\n")
+    nullOut.write("%s\t%s\n" % (nullMin, nullMax))
+
+# remove intermediate files
+for i in range(100):
+    if os.path.exists(str(i)+"_wcFst.txt"):
+        os.remove(str(i)+"_wcFst.txt")
