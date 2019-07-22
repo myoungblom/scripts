@@ -92,15 +92,16 @@ for i in range(100):
     nullOutput.close()
 
 # find maximum wcFst value in null distribution
+allFst = []
 for i in range(100):
-    allFst = []
     with open(str(i)+"_wcFst.txt", "r") as f:
         for line in f:
             line = line.strip("\n")
             info = line.split("\t")
-            allFst.append(info[4])
+            allFst.append(float(str(info[4])))
 
 # write summary file for null distribution
+allFst.sort()
 nullMin = min(allFst)
 nullMax = max(allFst)
 
