@@ -51,6 +51,7 @@ def usage():
 
 # function to calculate popgen stats using egglib
     # use add_stats to add statistics to be calculated
+    # have to divide theta & pi by window size to get per-site value
 def calc_stats(a, win):
     statDict = {}
     cs = egglib.stats.ComputeStats()
@@ -70,12 +71,14 @@ if alignment is None:
     usage()
     sys.exit()
 
-# write outfile containing 
+# write outfile containing header 
 outfile = open('windowStats_' + os.path.splitext(alignment)[0] + '.txt', 'w')
 outfile.write("Start\tStop\tTheta\tPi\tTajimasD\tFay&WuH\n")
+
+# read in alignment with egglib
 align = egglib.io.from_fasta(alignment)
 
-# ??
+# ? something to do with the outgroup, must test to see this part is still working
 for i in range(align.ns):
     align.get_sequence(i)
 if outgroup is not None:
@@ -88,7 +91,7 @@ stop = winWidth
 location = []
 TD = []
 
-# calculating stats for each window and writing out to output 
+# calculating stats for each window and writing to output 
 for window in align.slider(winWidth, winStep):
     stats = calc_stats(window, winWidth)
     outfile.write("%i\t%i\t%s\t%s\t%s\t%s\n" % (start, stop, stats['theta'],
