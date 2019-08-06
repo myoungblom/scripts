@@ -2,6 +2,7 @@
 # ABSTRACT: Create R plots
 # PODNAME: create_plots.R
 # Take the output files from the pan genome pipeline and create nice plots.
+# Edited by Madison Youngblom 07/2019
 library(ggplot2)
 
 setwd("/Users/madi/Desktop/07.28.2019_roaryPlots")
