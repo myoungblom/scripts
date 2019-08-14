@@ -5,14 +5,14 @@ import itertools
 import os
 
 #####
-# This script uses a genome annotation file in bed format to
-# append gene information to an Fst output file produced i
+# This script uses a genome annotation file in bed (or gff produced by roaryToCoreGFF.py)
+# format to append gene information to an Fst output file produced
 # by Vcflib (filtered and converted to csv in R).
 #####
 
 # check for correct arguments
 if len(sys.argv) != 3:
-	print("Usage: fstResultsToGenes.py <FstOutput.csv> <annotations.bed>")
+	print("Usage: fstResultsToGenes.py <FstOutput.csv> <annotations.bed/gff>")
 	sys.exit(0)
 
 fst = sys.argv[1]
@@ -33,17 +33,30 @@ with open(fst, 'r') as f:
 		outliers.append(position)
 tempOut.close()
 
-with open(bed, 'r') as annot:
-	for line in annot:
-		line = line.strip("\n")
+if bed.endswith(".bed"):
+    with open(bed, 'r') as annot:
+	    for line in annot:
+	        line = line.strip("\n")
 		info = line.split("\t")
 		start = int(info[1])
 		stop = int(info[2])
 		posList = list(range(start, stop+1))
 		writeOut = ("%i,%i,%s,%s" % (start,stop, info[5], info[9]))
-		for pos in posList:
-			if str(pos) in outliers:
-				fstDict[str(pos)] = writeOut
+	        for pos in posList:
+		    if str(pos) in outliers:
+		        fstDict[str(pos)] = writeOut
+if bed.endswith(".gff"):
+    with open(bed, 'r') as annot:
+            for line in annot:
+                line = line.strip("\n")
+                info = line.split("\t")
+                start = int(info[3])
+                stop = int(info[4])
+                posList = list(range(start, stop+1))
+                writeOut = ("%i,%i,%s,%s" % (start,stop, info[6], info[8]))
+                for pos in posList:
+                    if str(pos) in outliers:
+                        fstDict[str(pos)] = writeOut
 
 with open(outFile, "w") as out:
 	with open(temp, 'r') as infile:
