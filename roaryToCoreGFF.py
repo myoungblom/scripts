@@ -4,16 +4,14 @@ import sys
 import os
 import subprocess
 
-
 ######
-#
-#
+# This file takes a core alignment header embl file (from Roary output) and
+# the prokka gff files used for Roary and makes a gff file for the core genome alignment.
 ######
-
 
 # check for correct arguments
 if len(sys.argv) != 3:
-    print("Usage: roaryToCoreGFF.py <core_alingment_header.embl> <gffdir/>")
+    print("Usage: roaryToCoreGFF.py <core_alignment_header.embl> <gffdir/>")
     sys.exit(0)
 
 embl = sys.argv[1]
@@ -66,7 +64,7 @@ with open(coregff, "r") as f:
                 if not gene.startswith("group"):
                     gfflist.append(gene.split("_")[0].split("_")[0].split("_")[0].split("_")[0].split("_")[0].split("_")[0].split("_")[0].split("_")[0].split("_")[0])
 
-# make dictionary of genes and annotations
+# make dictionary of genes and annotations from compiled gff file
 gffdict = {}
 with open("allGFF.gff", "r") as f:
     for line in f:
@@ -87,6 +85,7 @@ with open("allGFF.gff", "r") as f:
                         gffdict[gene.split("_")[0]] = annot
             except IndexError:
                 pass
+
 # add additional information to core gff using gff dictionary
 tempfile = coregff.split(".")[0]+".tmp"
 tempout = open(tempfile, "w")
@@ -108,6 +107,7 @@ with open(coregff, "r") as f:
                     tempout.write(line+"\n")
             else:
                 tempout.write(line+"\n")
+
 tempout.close()
 os.rename("core_alignment_header.tmp", "core_alignment_header.gff")
 os.remove("allGFF.gff")
