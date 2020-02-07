@@ -12,7 +12,7 @@ from Bio import SeqIO
 # check for correct commandline arguments
 if len(sys.argv) != 2:
     print("Usage: contigFilter.py <contigs.fasta>")
-
+    sys.exit(0)
 
 inFile = sys.argv[1]
 outFile = inFile.split(".")[0]+"_filtered.fasta"
