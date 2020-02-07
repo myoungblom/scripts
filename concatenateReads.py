@@ -4,7 +4,6 @@ import sys
 import glob
 import os
 
-
 #####
 # This script takes a directory with fastq files from multiple lanes and a text file containing isolate ID's
 # and concatenates/renames them into a single forward and reverse read for each isolate.
