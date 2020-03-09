@@ -37,10 +37,21 @@ with open(gff, "r") as f:
 			feature = parser[2]
 			start = parser[3]
 			end = parser[4]
-			if feature == "gene" and start != "1" and int(end)>int(start):
-				IGRend = int(start)-1
-				if IGRend > IGRstart:
-					output.write("\t".join(parser[:2])+"\tIGR\t"+str(IGRstart)+"\t"+str(IGRend)+"\t.\t+\t.\tID=IGR"+str(counter)+";Name=IGR"+str(counter)+"_"+str(IGRstart)+"_"+str(IGRend)+"\n")
+			if feature == "gene" and start != "1":
+				if start < lastEnd:
 					IGRstart = int(end)+1
-					counter += 1
+					pass
+				if end < lastEnd:
+					IGRstart = int(lastEnd)+1
+					pass
+				else:
+					IGRend = int(start)-1
+					ID = "ID=IGR"+str(counter)
+					Name = "Name=IGR"+str(counter)+"_"+str(IGRstart)+"_"+str(IGRend)
+					if IGRend > IGRstart:
+						output.write("\t".join(parser[:2])+"\tgene\t"+str(IGRstart)+"\t"+str(IGRend)+"\t.\t+\t.\t"+ID+";"+Name+"\n")
+						IGRstart = int(end)+1
+						counter += 1
+			lastStart = start
+			lastEnd = end
 		output.write(line+"\n")
