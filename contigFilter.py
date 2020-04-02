@@ -25,7 +25,7 @@ quality_contigs = []
 for contig in SeqIO.parse(inFile, "fasta"):
     coverage = float((contig.id).split("_")[-1])
     length = len(contig.seq)
-    if length > 500 and coverage > 2.0:
+    if length > 500 and coverage > 5.0:
             quality_contigs.append(contig)
 
 SeqIO.write(quality_contigs, outFile, "fasta")
