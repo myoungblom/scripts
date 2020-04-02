@@ -5,7 +5,8 @@ from Bio import SeqIO
 
 #####
 # Converts metadata file downloaded from GISAID to format to be used 
-# with Nextstrain pipeline, renames fasta headers to be shorter.
+# with Nextstrain pipeline, renames fasta headers to be shorter and adds
+# second copy of Wuhan/WH01/2019 for rooting purposes.
 #####
 
 # check for correct command line arguments
@@ -33,9 +34,9 @@ with open(metadata, "r") as f:
 	for line in f:
 		line = line.strip("\n")
 		info = line.split("\t")
-		name = "/".join(info[1].split("/")[1:])
+		name = ("/".join(info[1].split("/")[1:])).replace(" ","")
 		cont = info[2].split("/")[0]
-		count = (info[2].split("/")[1]).replace(" ","")
+		count = info[2].split("/")[1]
 		date = info[3]
 		oldName = ("|".join([info[1],info[0],date])).replace(" ","")
 		names[oldName] = name
@@ -51,6 +52,10 @@ with open(fasta, "r") as f:
 		record.description = names[record.id]
 		record.id = names[record.id]
 		newSeqs.append(record)
+		if record.id == "Wuhan/WH01/2019":
+			record.description = "Wuhan-Hu-1/2019"
+			record.id = "Wuhan-Hu-1/2019"
+			newSeqs.append(record)
 
 # write out records with new names to output file
 fastaOutput = open(fastaOut,"w")		
