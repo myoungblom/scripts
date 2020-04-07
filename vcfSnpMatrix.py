@@ -33,7 +33,6 @@ iso = {}
 names = []
 tree = Phylo.read(sys.argv[2],"newick")
 term = tree.get_terminals()
-print(term)
 
 with open(vcf, "r") as f:
 	for line in f:
