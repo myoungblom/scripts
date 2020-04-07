@@ -39,6 +39,6 @@ else:
 # parse fasta file, write pulled sequences to new fasta files
 for seq in SeqIO.parse(sys.argv[1], "fasta"):
 	if seq.id in seq_to_pull:
-		output = open(seq.id+".fasta", "w")
+		output = open((seq.id).replace("/","")+".fasta", "w")
 		SeqIO.write(seq, output, "fasta")
 		output.close()

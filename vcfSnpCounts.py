@@ -21,18 +21,19 @@ with open(vcf, "r") as f:
 	for line in f:
 		line = line.strip("\n")
 		if line.startswith("#CHROM"):
-			ids = line.split("\t")
-			for i in ids[9:]:
+			indices = line.split("\t")
+			counter = 9
+			for i in indices[9:]:
 				ids.append(i)
-				counts[ids.index(i)] = 0
+				counts[counter] = 0
+				counter += 1
 		elif line.startswith("1"):
 			snps = line.split("\t")
 			counter = 9
 			for i in snps[9:]:
 				counts[counter] += int(i)
 				counter += 1
-
 for k in sorted(counts, key=counts.get, reverse=True):
-	output.write(ids[int(k)]+"\t"+str(counts[k])+"\n")
+	output.write(ids[int(k)-9]+"\t"+str(counts[k])+"\n")
 
 output.close()
