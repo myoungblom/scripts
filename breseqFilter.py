@@ -25,7 +25,7 @@ def gdFilter(gd, bedCoor):
 					line = line.strip()
 					info = line.split("\t")
 					pos = info[4]
-					if pos in bedCoor:
+					if int(pos) in bedCoor:
 						print("Removed position "+pos)
 					else:
 						OUT.write(line+"\n")
