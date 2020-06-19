@@ -27,8 +27,8 @@ output.write(input_file + ":" + str( len(total_contigs)) + " contigs\n")
 total_length = 0
 
 for contig in SeqIO.parse(input_file, "fasta"):
-	output.write(contig.id +"\n")
-	output.write(str(len(contig)) + " bp" + "\n")
+	output.write(contig.id +"\t")
+	output.write(str(len(contig)) + "\n")
 	total_length += len(contig)
 
 average_length = total_length / len(total_contigs)
