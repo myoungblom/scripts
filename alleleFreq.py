@@ -9,6 +9,7 @@ import sys
 # Filters:
 #   - filters out mutations in regions specified by bed file
 #   - filters out fixed mutations relative to the reference
+#   - filters out positions that remain WT at all sequenced timepoints
 #####
 
 if len(sys.argv) < 4:
@@ -50,7 +51,7 @@ def filterMuts(vcf, dict_out, filter):
                     alleles = counts.split(":")[3]
                     refC = int(alleles.split(",")[0])
                     altC = int(alleles.split(",")[1])
-                    if (int(altC) > 5):
+                    if (altC > 5):
                         total = refC+altC
                         if altC != 0:
                             altF = round((altC/total)*100,0)
