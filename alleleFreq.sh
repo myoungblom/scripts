@@ -18,10 +18,10 @@ for x in ${bams};
 do
     echo ${x};
     bcftools mpileup -f ${ref} -o ${x/.bam/.vcf} -O v -a AD,ADF,ADR ${x};
-    bcftools filter -s LowQual -e "%QUAL<20 || DP>100" ${x/.bam/.vcf} > ${x/.vcf/.flt.vcf};
+    bcftools filter -s LowQual -e "%QUAL<20 || DP>100" ${x/.bam/.vcf} > ${x/.bam/.flt.vcf};
 done
 
-vcfs=("ls *.flt.vcf")
+vcfs=(ls *.flt.vcf)
 echo ${vcfs[*]}
 
 
