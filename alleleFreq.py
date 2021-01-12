@@ -49,8 +49,14 @@ def filterMuts(vcf, dict_out, filter):
                 altC = int(alleles.split(",")[1])
                 #if (int(altC) > 5):
                 total = refC+altC
-                refF = round((refC/total)*100,0)
-                altF = round((altC/total)*100,0)
+                if refC != 0:
+                    refF = round((refC/total)*100,0)
+                else:
+                    refF = 0
+                if altC != 0:
+                    altF = round((altC/total)*100,0)
+                else:
+                    altF = 0
                 dict_out[str(pos)+alt] = [altF]
     print(dict_out)
     return dict_out
