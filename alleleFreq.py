@@ -38,19 +38,19 @@ def filterMuts(vcf, dict_out, filter):
             if not line.startswith("#"):  
                 line = line.strip()
                 info = line.split("\t")
-                    pos = info[1]
-                    if pos not in filter:
-                        ref = info[3]
-                        alt = info[3]
-                        counts = info[9]
-                        alleles = counts.split(":")[3]
-                        refC = int(alleles.split(",")[0])
-                        altC = int(alleles.split(",")[1])
-                        if (int(alt) > 5):
-                            total = ref+alt
-                            refF = round((ref/total)*100,0)
-                            altF = round((alt/total)*100,0)
-                            dict_out[str(pos)+alt] = [altF]
+                pos = info[1]
+                if pos not in filter:
+                    ref = info[3]
+                    alt = info[3]
+                    counts = info[9]
+                    alleles = counts.split(":")[3]
+                    refC = int(alleles.split(",")[0])
+                    altC = int(alleles.split(",")[1])
+                    if (int(alt) > 5):
+                        total = ref+alt
+                        refF = round((ref/total)*100,0)
+                        altF = round((alt/total)*100,0)
+                        dict_out[str(pos)+alt] = [altF]
     print(dict_out)
     return dict_out
 
