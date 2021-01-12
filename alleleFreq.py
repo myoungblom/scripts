@@ -42,6 +42,7 @@ def filterMuts(vcf, dict_out, filter):
                 info = line.split("\t")
                 pos = info[1]
                 if pos not in filter:
+                    print(pos)
                     count += 1
                     if count % 100000 == 0:
                         print(str(count)+" mutations processed")
