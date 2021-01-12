@@ -33,6 +33,7 @@ def getBedCoor(bedfile):
 
 def filterMuts(vcf, dict_out, filter):
     with open(vcf,"r") as f:
+        count = 0
         print("Tabulating mutants from "+ vcf)    
         for line in f:                    
             if not line.startswith("#"):  
@@ -40,8 +41,11 @@ def filterMuts(vcf, dict_out, filter):
                 info = line.split("\t")
                 pos = info[1]
                 if pos not in filter:
+                    count += 1
+                    if count % 100000 == 0:
+                        print(str(count)+" mutations processed")
                     ref = info[3]
-                    alt = info[3]
+                    alt = info[4]
                     counts = info[9]
                     alleles = counts.split(":")[3]
                     refC = int(alleles.split(",")[0])
