@@ -21,6 +21,7 @@ vcfs = sys.argv[3:]
 
 
 def getBedCoor(bedfile):
+    print("Parsing bed file ...")
     bedCoor = []
     with open(bedfile, "r") as f:
         for line in f:
@@ -32,7 +33,7 @@ def getBedCoor(bedfile):
 
 def filterMuts(vcf, dict_out, filter):
     with open(vcf,"r") as f:
-        print(vcf)    
+        print("Tabulating mutants from "+ vcf)    
         for line in f:                    
             if not line.startswith("#"):  
                 line = line.strip()
@@ -66,7 +67,10 @@ for x in vcfs:
     header.append(x.split(".")[0])
     filterMuts(x, freqs, bad_coordinates)
 
+print("Done tabulating mutations from all samples")
+
 with open(strain+"_alleleFreqs.csv","w") as out:
+    print("Filtering mutations ...")
     out.write(",".join(header)+"\n")
     for key,value in freqs.items():
         times = len(value)
