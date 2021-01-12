@@ -15,17 +15,32 @@ gds = sys.argv[1:]
 
 for f in gds:
 	with open(f,"r") as IN:
-		with open(f.split(".")[0]+"_reformat.gd","w") as OUT:
-			next(IN)
+		next(IN)
+		with open(f.split(".")[0]+"_gd.csv","w") as OUT:
+			header = ["type","id","parent-id","reference","position","new_char"]
 			for line in IN:
 				line = line.strip()
 				info = line.split("\t")
-				try:
-					if info[6].startswith("frequency"):
-						newline = "\t".join(info[:6]+["\t"*6]+info[6:])
+				if info[0] != "UN":
+					if info[6].startswith("frequency="):
+						newinfo = info[:6]+[""]*7+info[6:]
+					elif info[7].startswith("frequency="):
+						newinfo = info[:7]+[""]*6+info[7:]
+					elif info[8].startswith("frequency="):
+						newinfo = info[:8]+[""]*5+info[8:]
 					else:
-						newline = line
-				except IndexError:
-					pass
-				OUT.write(newline+"\n")
+						newinfo = info
+					if newinfo[1] == "1":
+						for x in newinfo[6:]:
+							head = x.split("=")[0]
+							header.append(head)
+						OUT.write(",".join(header)+"\n")
+					newline = newinfo[:6]
+					for y in newinfo[6:]:
+						try:
+							tail = y.split("=")[1]
+							newline.append(tail)
+						except IndexError:
+							newline.append(y)
+					OUT.write(",".join(newline)+"\n")
 

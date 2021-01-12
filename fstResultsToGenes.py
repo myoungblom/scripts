@@ -12,8 +12,8 @@ import os
 
 # check for correct arguments
 if len(sys.argv) != 3:
-	print("Usage: fstResultsToGenes.py <FstOutput.csv> <annotations.bed/gff>")
-	sys.exit(0)
+    print("Usage: fstResultsToGenes.py <FstOutput.csv> <annotations.bed/gff>")
+    sys.exit(0)
 
 fst = sys.argv[1]
 temp = fst.split(".")[0]+".tmp"
@@ -24,30 +24,31 @@ bed = sys.argv[2]
 outliers = []
 fstDict = {}
 with open(fst, 'r') as f:
-	header = next(f).strip("\n")
-	tempOut.write(header+",geneStart,geneStop,Strand,Annotation\n")
-	for line in f:
-		tempOut.write(line)
-		line = line.strip("\n")
-		position = line.split(",")[2]
-		outliers.append(position)
+    header = next(f)
+    tempOut.write("genome,position,targetFreq,backgroundFreq,wcFst,geneStart,geneStop,Strand,Annotation\n")
+    for line in f:
+        tempOut.write(line)
+        line = line.strip("\n")
+        position = line.split(",")[1]
+        outliers.append(position)
 tempOut.close()
 
 if bed.endswith(".bed"):
     with open(bed, 'r') as annot:
-	    for line in annot:
-	        line = line.strip("\n")
-		info = line.split("\t")
-		start = int(info[1])
-		stop = int(info[2])
-		posList = list(range(start, stop+1))
-		writeOut = ("%i,%i,%s,%s" % (start,stop, info[5], info[9]))
-	        for pos in posList:
-		    if str(pos) in outliers:
-		        fstDict[str(pos)] = writeOut
+        for line in annot:
+            line = line.strip("\n")
+            info = line.split("\t")
+            start = int(info[1])
+            stop = int(info[2])
+            posList = list(range(start, stop+1))
+            writeOut = ("%i,%i,%s,%s" % (start,stop, info[5], info[9]))
+            for pos in posList:
+                if str(pos) in outliers:
+                    fstDict[str(pos)] = writeOut
+
 if bed.endswith(".gff"):
     with open(bed, 'r') as annot:
-            for line in annot:
+        for line in annot:
                 line = line.strip("\n")
                 info = line.split("\t")
                 start = int(info[3])
@@ -59,13 +60,14 @@ if bed.endswith(".gff"):
                         fstDict[str(pos)] = writeOut
 
 with open(outFile, "w") as out:
-	with open(temp, 'r') as infile:
-		out.write(next(infile))
-		for line in infile:
-			position = str(line.split(",")[2])
-			if position in fstDict:
-				annotation = fstDict[position]
-				out.write(line.strip("\n")+","+annotation+"\n")
-			else:
-				out.write(line.strip("\n")+","+"intergenic"+"\n")
+    with open(temp, 'r') as infile:
+        out.write(next(infile))
+        for line in infile:
+            line = line.strip()
+            position = str(line.split(",")[1])
+            if position in fstDict.keys():
+                annotation = fstDict[position]
+                out.write(line.strip("\n")+","+annotation+"\n")
+            else:
+                out.write(line.strip("\n")+","+"intergenic"+"\n")
 os.remove(temp)
