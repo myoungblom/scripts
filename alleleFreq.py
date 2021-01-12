@@ -82,7 +82,7 @@ with open(strain+"_alleleFreqs.csv","w") as out:
     out.write(",".join(header)+"\n")
     for key,value in freqs.items():
         times = len(value)
-        print("timepoints: "+str(times)))
+        print("timepoints: "+str(times))
         if (value.count(0) != times) and (value.count(100) != times):
             print("good to go!")
             info = key.split("_")
