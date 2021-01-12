@@ -38,26 +38,24 @@ def filterMuts(vcf, dict_out, filter):
                 line = line.strip()
                 info = line.split("\t")
                 pos = info[1]
-                #if pos not in filter:
-                ref = info[3]
-                alt = info[3]
-                counts = info[9]
-                alleles = counts.split(":")[3]
-                refC = int(alleles.split(",")[0])
-                altC = int(alleles.split(",")[1])
-                #if (int(altC) > 5):
-                total = refC+altC
-                if altC != 0:
-                    altF = round((altC/total)*100,0)
-                else:
-                    altF = 0
-                mut = "_".join([str(pos),ref,alt])
-                if mut not in dict_out.keys():
-                    dict_out[mut] = [altF]
-                else:
-                    dict_out[mut].append(altF)
-    
-    print(dict_out)
+                if pos not in filter:
+                    ref = info[3]
+                    alt = info[3]
+                    counts = info[9]
+                    alleles = counts.split(":")[3]
+                    refC = int(alleles.split(",")[0])
+                    altC = int(alleles.split(",")[1])
+                    if (int(altC) > 5):
+                        total = refC+altC
+                        if altC != 0:
+                            altF = round((altC/total)*100,0)
+                        else:
+                            altF = 0
+                        mut = "_".join([str(pos),ref,alt])
+                        if mut not in dict_out.keys():
+                            dict_out[mut] = [altF]
+                        else:
+                            dict_out[mut].append(altF)
     return dict_out
 
 freqs = {}
@@ -68,9 +66,7 @@ for x in vcfs:
     header.append(x.split(".")[0])
     filterMuts(x, freqs, bad_coordinates)
 
-print(header)
-
-with open(strain+"alleleFreqs.csv","w") as out:
+with open(strain+"_alleleFreqs.csv","w") as out:
     out.write(",".join(header)+"\n")
     for key,value in freqs.items():
         times = len(value)
@@ -83,4 +79,3 @@ with open(strain+"alleleFreqs.csv","w") as out:
             newinfo = [pos,ref,alt]+value_int
             newline = ",".join(newinfo)
             out.write(newline+"\n")
-
