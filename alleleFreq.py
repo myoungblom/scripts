@@ -33,7 +33,8 @@ def getBedCoor(bedfile):
 bad_coordinates = getBedCoor(bed)
 
 def filterMuts(vcf, dict_out, filter):
-    with open(vcf,"r") as f:    
+    with open(vcf,"r") as f:
+        print(vcf)    
         for line in f:                    
             if not line.startswith("#"):  
                 line = line.strip()
