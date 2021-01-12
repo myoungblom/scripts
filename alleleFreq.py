@@ -61,7 +61,7 @@ def filterMuts(vcf, dict_out, filter):
                 if mut not in dict_out.keys():
                     dict_out[mut] = [altF]
                 else:
-                    dict_out[mut].apend(altF)
+                    dict_out[mut].append(altF)
     
     print(dict_out)
     return dict_out
