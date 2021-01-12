@@ -51,13 +51,14 @@ if bed.endswith(".gff"):
         for line in annot:
                 line = line.strip("\n")
                 info = line.split("\t")
-                start = int(info[3])
-                stop = int(info[4])
-                posList = list(range(start, stop+1))
-                writeOut = ("%i,%i,%s,%s" % (start,stop, info[6], info[8]))
-                for pos in posList:
-                    if str(pos) in outliers:
-                        fstDict[str(pos)] = writeOut
+		if info[2] in ["CDS","rRNA"]:
+			start = int(info[3])
+                	stop = int(info[4])
+                	posList = list(range(start, stop+1))
+			writeOut = ("%i,%i,%s,%s" % (start,stop, info[6], info[8]))
+                	for pos in posList:
+                    		if str(pos) in outliers:
+                        		fstDict[str(pos)] = writeOut
 
 with open(outFile, "w") as out:
     with open(temp, 'r') as infile:
@@ -66,8 +67,9 @@ with open(outFile, "w") as out:
             line = line.strip()
             position = str(line.split(",")[1])
             if position in fstDict.keys():
-                annotation = fstDict[position]
-                out.write(line.strip("\n")+","+annotation+"\n")
+		annotation = fstDict[position]
+		annotation.replace(",",";")
+		out.write(line.strip("\n")+","+annotation+"\n")
             else:
-                out.write(line.strip("\n")+","+"intergenic"+"\n")
+                out.write(line.strip("\n")+",,,,"+"intergenic"+"\n")
 os.remove(temp)

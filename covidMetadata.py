@@ -30,7 +30,7 @@ metaOutput.write("Name\tContinent\tCountry\tDate\n")
 names = {}
 
 # reformat metadata file, make shorter names for each virus
-with open(metadata, "r") as f:
+with open(metadata, encoding="utf8", errors="ignore") as f:
 	for line in f:
 		line = line.strip("\n")
 		info = line.split("\t")
