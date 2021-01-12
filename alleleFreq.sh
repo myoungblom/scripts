@@ -13,15 +13,16 @@ ref="$1"
 bed="$2"
 bams="${@:3}"
 
-# compile mutations from bam files
-for x in ${bams}
+# compile mutations from bam files & filter out low quality muts
+for x in ${bams};
 do
-    bcftools mpileup -f ${ref} -o ${x/.bam/.vcf} -O v -a AD,ADF,ADR ${x}
+    echo ${x};
+    bcftools mpileup -f ${ref} -o ${x/.bam/.vcf} -O v -a AD,ADF,ADR ${x};
+    bcftools filter -s LowQual -e "%QUAL<20 || DP>100" ${x/.bam/.vcf} > ${x/.vcf/.flt.vcf};
 done
 
-# filter out low quality mutations
-for x in ${bams}
-do
-    bcftools filter -s LowQual -e "%QUAL<20 || DP>100" ${x/.bam/.vcf} > ${x/.vcf/.flt.vcf}
-done
+vcfs=("ls *.flt.vcf")
+echo ${vcfs[*]}
 
+
+#python alleleFreq.py 
