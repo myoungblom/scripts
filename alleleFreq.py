@@ -30,8 +30,6 @@ def getBedCoor(bedfile):
                 bedCoor.append(i)
     return(bedCoor)
 
-bad_coordinates = getBedCoor(bed)
-
 def filterMuts(vcf, dict_out, filter):
     with open(vcf,"r") as f:
         print(vcf)    
@@ -49,10 +47,6 @@ def filterMuts(vcf, dict_out, filter):
                 altC = int(alleles.split(",")[1])
                 #if (int(altC) > 5):
                 total = refC+altC
-                #if refC != 0:
-                    #refF = round((refC/total)*100,0)
-                #else:
-                    #refF = 0
                 if altC != 0:
                     altF = round((altC/total)*100,0)
                 else:
@@ -68,7 +62,24 @@ def filterMuts(vcf, dict_out, filter):
 
 freqs = {}
 header = ["position","ref","alt"]
+bad_coordinates = getBedCoor(bed)
 
 for x in vcfs:
     header.append(x.split(".")[0])
     filterMuts(x, freqs, bad_coordinates)
+
+print(header)
+
+with open(strain+"alleleFreqs.csv","w") as out:
+    out.write(",".join(header)+"\n")
+    for key,value in freqs.items():
+        times = len(value)
+        if (value).count("0") != times) and (value.count("100") != times):
+            info = key.split("_")
+            pos = info[0]
+            ref = info[1]
+            alt = info[2]
+            newinfo = [pos,ref,alt]+value
+            newline = ",".join(newinfo)
+            out.write(newline+"\n")
+
