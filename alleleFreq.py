@@ -1,8 +1,6 @@
-from __future__ import division
 #!/usr/bin/env python
 
 import sys
-
 
 #####
 # Companion script to alleleFreq.sh, takes in filtered vcf files from
