@@ -51,11 +51,11 @@ def filterMuts(vcf, dict_out, filter):
                     alleles = counts.split(":")[3]
                     refC = int(alleles.split(",")[0])
                     altC = int(alleles.split(",")[1])
-                    print(ref,alt,refC,altC)
                     if (altC > 5):
                         total = refC+altC
                         if altC != 0:
                             altF = round((altC/total)*100,0)
+                            print(altF)
                         else:
                             altF = 0
                         mut = "_".join([str(pos),ref,alt])
@@ -63,6 +63,7 @@ def filterMuts(vcf, dict_out, filter):
                             dict_out[mut] = [altF]
                         else:
                             dict_out[mut].append(altF)
+    print(dict_out)
     return dict_out
 
 freqs = {}
@@ -80,7 +81,9 @@ with open(strain+"_alleleFreqs.csv","w") as out:
     out.write(",".join(header)+"\n")
     for key,value in freqs.items():
         times = len(value)
+        print("timepoints: "+times)
         if (value.count(0) != times) and (value.count(100) != times):
+            print("good to go!")
             info = key.split("_")
             pos = str(info[0])
             ref = info[1]
