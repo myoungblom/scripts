@@ -57,7 +57,12 @@ def filterMuts(vcf, dict_out, filter):
                     altF = round((altC/total)*100,0)
                 else:
                     altF = 0
-                dict_out["_".join([str(pos),ref,alt])] = [altF]
+                mut = "_".join([str(pos),ref,alt])
+                if mut not in dict_out.keys():
+                    dict_out[mut] = [altF]
+                else:
+                    dict_out[mut].apend(altF)
+    
     print(dict_out)
     return dict_out
 
