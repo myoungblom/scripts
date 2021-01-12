@@ -79,6 +79,7 @@ with open(strain+"alleleFreqs.csv","w") as out:
             pos = info[0]
             ref = info[1]
             alt = info[2]
+            value_int = [int(x) for x in value]
             newinfo = [pos,ref,alt]+value
             newline = ",".join(newinfo)
             out.write(newline+"\n")
