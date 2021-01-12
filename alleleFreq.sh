@@ -7,11 +7,12 @@
 # across those time points. Also requires companion python script "alleleFreq.py"
 #####
 
-# usage: alleleFreq.sh <path.to.ref> <bed> <bam1> <bam2> ... <bamN>
+# usage: alleleFreq.sh <strain.name> <path.to.ref> <bed> <bam1> <bam2> ... <bamN>
 
-ref="$1"
-bed="$2"
-bams="${@:3}"
+strain="$1"
+ref="$2"
+bed="$3"
+bams="${@:4}"
 
 # compile mutations from bam files & filter out low quality muts
 for x in ${bams};
@@ -21,8 +22,8 @@ do
     bcftools filter -s LowQual -e "%QUAL<20 || DP>100" ${x/.bam/.vcf} > ${x/.bam/.flt.vcf};
 done
 
-vcfs=(ls *.flt.vcf)
+vcfs=(*.flt.vcf)
 echo ${vcfs[*]}
 
-
-#python alleleFreq.py 
+# run python script to tabulate & filter mutations
+python3 alleleFreq.py ${strain} ${bed} ${vcfs[*]}
