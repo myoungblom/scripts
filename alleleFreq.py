@@ -8,7 +8,7 @@ import sys
 # mutation frequencies at each point.
 # Filters:
 #   - filters out mutations in regions specified by bed file
-#   - filters out fixed mutations relative to the reference
+#   - filters out fixed (>95%) mutations relative to the reference
 #   - filters out positions that remain WT at all sequenced timepoints
 #####
 
@@ -32,36 +32,42 @@ def getBedCoor(bedfile):
                 bedCoor.append(i)
     return(bedCoor)
 
-def filterMuts(vcf, dict_out, filter):
-    with open(vcf,"r") as f:
-        count = 0
-        print("Tabulating mutants from "+ vcf)    
-        for line in f:                    
-            if not line.startswith("#"):  
-                line = line.strip()
-                info = line.split("\t")
-                pos = info[1]
-                if pos not in filter:
-                    count += 1
-                    if count % 100000 == 0:
-                        print(str(count)+" mutations processed")
-                    ref = info[3]
-                    alt = info[4]
-                    counts = info[9]
-                    alleles = counts.split(":")[3]
-                    refC = int(alleles.split(",")[0])
-                    altC = int(alleles.split(",")[1])
-                    if (altC > 5):
-                        total = refC+altC
-                        if altC != 0:
-                            altF = round((altC/total)*100,0)
-                        else:
-                            altF = 0
-                        mut = "_".join([str(pos),ref,alt])
-                        if mut not in dict_out.keys():
-                            dict_out[mut] = [altF]
-                        else:
-                            dict_out[mut].append(altF)
+def filterMuts(vcf_list, dict_out, filter):
+    file_count = 0
+    for vcf in vcf_list:
+        file_count += 1
+        with open(vcf,"r") as f:
+            count = 0
+            print("Tabulating mutants from "+ vcf)    
+            for line in f:                    
+                if not line.startswith("#"):  
+                    line = line.strip()
+                    info = line.split("\t")
+                    pos = info[1]
+                    if pos not in filter:
+                        count += 1
+                        if count % 100000 == 0:
+                            print(str(count)+" mutations processed")
+                        ref = info[3]
+                        alt = info[4].split(",")[0]
+                        counts = info[9]
+                        alleles = counts.split(":")[3]
+                        refC = int(alleles.split(",")[0])
+                        altC = int(alleles.split(",")[1])
+                        if (altC > 5) and (refC >5):
+                            total = refC+altC
+                            if altC != 0:
+                                altF = round((altC/total)*100,0)
+                            else:
+                                altF = 0
+                            mut = "_".join([str(pos),ref,alt])
+                            if mut not in dict_out.keys():
+                                dict_out[mut] = [0]*(file_count-1)+[altF]
+                            else:
+                                dict_out[mut].append(altF)
+        for key,value in dict_out.items():
+            if len(value) == file_count-1:
+                dict_out[key].append(0)
     return dict_out
 
 freqs = {}
@@ -70,7 +76,8 @@ bad_coordinates = getBedCoor(bed)
 
 for x in vcfs:
     header.append(x.split(".")[0])
-    filterMuts(x, freqs, bad_coordinates)
+
+filterMuts(vcfs, freqs, bad_coordinates)
 
 print("Done tabulating mutations from all samples")
 
@@ -79,7 +86,7 @@ with open(strain+"_alleleFreqs.csv","w") as out:
     out.write(",".join(header)+"\n")
     for key,value in freqs.items():
         times = len(value)
-        if (value.count(0) != times) and (value.count(100) != times):
+        if (value.count(0) != times) and (not all(i >= 95 for i in value)) and (not all(i <= 20 for i in value)):
             info = key.split("_")
             pos = str(info[0])
             ref = info[1]
