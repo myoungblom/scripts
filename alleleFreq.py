@@ -51,7 +51,10 @@ def filterMuts(vcf_list, dict_out, filter):
                         ref = info[3]
                         alt = info[4].split(",")[0]
                         counts = info[9]
-                        cov = int(info[7].split(";")[0].split("=")[1])
+                        try:
+                            cov = int((info[7].split(";")[0]).split("=")[1])
+                        except IndexError:
+                            print(info)
                         alleles = counts.split(":")[3]
                         refC = int(alleles.split(",")[0])
                         altC = int(alleles.split(",")[1])
