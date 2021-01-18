@@ -58,17 +58,18 @@ def filterMuts(vcf_list, dict_out, filter):
                         alleles = counts.split(":")[3]
                         refC = int(alleles.split(",")[0])
                         altC = int(alleles.split(",")[1])
-                        if (altC >= 5) and (cov >= 30):
-                            total = refC+altC
-                            if altC != 0:
-                                altF = round((altC/total)*100,0)
-                            else:
-                                altF = 0
-                            mut = "_".join([str(pos),ref,alt])
-                            if mut not in dict_out.keys():
-                                dict_out[mut] = [0]*(file_count-1)+[altF]
-                            else:
-                                dict_out[mut].append(altF)
+                        mut = "_".join([str(pos),ref,alt])
+                        total = refC+altC
+                        if cov < 30:
+                            altF = "LowCov"
+                        elif altC == 0:
+                            altF = 0
+                        else:
+                            altF = round((altC/total)*100,0)
+                        if mut not in dict_out.keys():
+                            dict_out[mut] = [0]*(file_count-1)+[altF]
+                        else:
+                            dict_out[mut].append(altF)
         for key,value in dict_out.items():
             if len(value) == file_count-1:
                 dict_out[key].append(0)
@@ -90,7 +91,7 @@ with open(strain+"_alleleFreqs.csv","w") as out:
     out.write(",".join(header)+"\n")
     for key,value in freqs.items():
         times = len(value)
-        if (value.count(0) != times) and (not all(i >= 95 for i in value)) and (not all(i <= 20 for i in value)):
+        if (value.count(0) != times) and (not all(i >= 95 for i in value)) and (not all(i <= 20 for i in value)) and ("LowCov" not in value):
             info = key.split("_")
             pos = str(info[0])
             ref = info[1]
