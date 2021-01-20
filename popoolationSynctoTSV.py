@@ -3,6 +3,7 @@
 import argparse
 import os.path
 from collections import defaultdict
+from datetime import datetime
 
 def get_args():
     """
@@ -37,6 +38,7 @@ def alleleFreq(syncfile, filter_coord, outfile, mincount, mincov, minfreq):
     """
     Reads sync file, filters mutations based on position, allele count, coverage and variant frequency.
     """
+    print("Start: "+str(datetime.now()))
     freq_dict = defaultdict(lambda: defaultdict(list))
     base_dict = {0:"A",1:"T",2:"C",3:"G"}
     rev_base_dict = {"A":0,"T":1,"C":2,"G":3}
@@ -83,8 +85,8 @@ def alleleFreq(syncfile, filter_coord, outfile, mincount, mincov, minfreq):
             alt = []
             time_dict = defaultdict(list)
             for x,y in value.items():
-                # exclude frequency of reference allele & exclude alleles with 0% freq
                 y = [int(i) for i in y]
+                # exclude frequency of reference allele & exclude alleles with 0% freq
                 if (not x == ref) and (not all(i == 0 for i in y)):
                     alt.append(x)
                     for i in y:
@@ -95,6 +97,7 @@ def alleleFreq(syncfile, filter_coord, outfile, mincount, mincov, minfreq):
                 for time,freqs in time_dict.items():
                     out.write("\t"+",".join([str(x) for x in freqs]))
                 out.write("\n")
+    print("End: "+str(datetime.now()))
 
 
 
