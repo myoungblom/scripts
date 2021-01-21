@@ -89,8 +89,10 @@ def alleleFreq(syncfile, filter_coord, outfile, mincount, mincov, minfreq):
                 # exclude frequency of reference allele & exclude alleles with 0% freq
                 if (not x == ref) and (not all(i == 0 for i in y)):
                     alt.append(x)
+                    pos_count = 0
                     for i in y:
-                        time_dict[y.index(i)+1].append(i)
+                        pos_count += 1
+                        time_dict[pos_count].append(i)
             if len(alt) != 0:
                 alt = ",".join(alt)
                 out.write("\t".join([pos,ref,alt]))
