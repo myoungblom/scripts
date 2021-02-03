@@ -64,18 +64,18 @@ def alleleFreq(syncfile, filter_coord, outfile, mincount, mincov, minfreq):
                     base_index = -1
                     positions = [0,1,2,3,5]
                     for x in positions:
-                        for base in base_counts[x]:
-                            base_index += 1
-                            # check if alternate allele counts meet minimum count requirements
-                            if int(base) >= mincount:
-                                freq = round((int(base)/total*100),0)
-                                # check if variant frequency is above minimum threshold
-                                if freq < minfreq:
-                                    freq = 0      
-                            else:
-                                freq = 0
-                            alt = base_dict[base_index]
-                            freq_dict[pos_key][alt].append(freq)
+                        base = base_counts[x]
+                        base_index += 1
+                        # check if alternate allele counts meet minimum count requirements
+                        if int(base) >= mincount:
+                            freq = round((int(base)/total*100),0)
+                            # check if variant frequency is above minimum threshold
+                            if freq < minfreq:
+                                freq = 0      
+                        else:
+                            freq = 0
+                        alt = base_dict[base_index]
+                        freq_dict[pos_key][alt].append(freq)
     # header for output file
     header = "\t".join(["pos","ref","alt"]+["t"+str(n) for n in range(1,num_time_points+1)])
     with open(outfile, "w") as out:
