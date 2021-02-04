@@ -40,8 +40,8 @@ def alleleFreq(syncfile, filter_coord, outfile, mincount, mincov, minfreq):
     """
     print("Start: "+str(datetime.now()))
     freq_dict = defaultdict(lambda: defaultdict(list))
-    base_dict = {0:"A",1:"T",2:"C",3:"G"}
-    rev_base_dict = {"A":0,"T":1,"C":2,"G":3}
+    base_dict = {0:"A",1:"T",2:"C",3:"G",4:"DEL"}
+    rev_base_dict = {"A":0,"T":1,"C":2,"G":3,"DEL":4}
     with open(syncfile,"r") as f:
         print("Parsing sync file ...")
         for line in f:
@@ -62,7 +62,9 @@ def alleleFreq(syncfile, filter_coord, outfile, mincount, mincov, minfreq):
                     base_counts = point.split(":")
                     # only looking at counts of ATCG - no N's, no deletions
                     base_index = -1
-                    for base in base_counts[:4]:
+                    positions = [0,1,2,3,5]
+                    for x in positions:
+                        base = base_counts[x]
                         base_index += 1
                         # check if alternate allele counts meet minimum count requirements
                         if int(base) >= mincount:

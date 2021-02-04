@@ -21,4 +21,4 @@ echo "Converting mpilup file to sync file ..."
 java -ea -Xmx7g -jar /opt/PepPrograms/popoolation2_1201/mpileup2sync.jar --input ${strain}.mpileup --output ${strain}.sync --fastq-type sanger --min-qual 20 --threads 8
 
 # use python script to convert sync file to TSV
-python3 ~/scripts/scripts/popoolationSyncToTSV.py --bed ${bed} --min-count 5 --min-coverage 50 --min-freq 10 --output ${strain}_popoolation.tsv ${strain}.sync
+python3 ~/scripts/scripts/popoolationSynctoTSV.py --bed ${bed} --min-count 5 --min-coverage 50 --min-freq 5 --output ${strain}_popoolation.tsv ${strain}.sync
