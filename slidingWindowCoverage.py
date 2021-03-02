@@ -55,7 +55,7 @@ for data in outs:
 
 # write output
 print("Writing to output ...")
-with open("slidingWindowCoverage.txt","w") as out:
+with open("slidingWindowCoverage_"+str(w)+"w"+str(s)+"s"+".txt","w") as out:
     header = ["position"]+[x.split("_")[0] for x in outs]
     out.write("\t".join(header)+"\n")
     for key,value in covDict.items():
