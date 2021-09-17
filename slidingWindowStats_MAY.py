@@ -12,11 +12,6 @@ import matplotlib.pyplot as plt
 # statistics based on the window width and window step given by the user.
 # Will calculate Fay and Wu's H if an outgroup is provided.
 
-#####
-# Edited by M. Youngblom 07/2019 to work with EggLib v3.
-#####
-
-# get arguments
 def get_arguments(argv):
     if len(argv) == 0:
         usage()
@@ -41,7 +36,6 @@ def get_arguments(argv):
             outgroup = arg
     return (alignment, winWidth, winStep, outgroup)
 
-# usage
 def usage():
     print "slidingWindowStats.py\n \
         -a <fasta alignment>\n \
@@ -49,57 +43,45 @@ def usage():
         -s <window step default = 300>\n \
         -o <outgroup>"
 
-# function to calculate popgen stats using egglib
-    # use add_stats to add statistics to be calculated
-    # have to divide theta & pi by window size to get per-site value
-def calc_stats(a, win):
+def calc_stats(a):
     statDict = {}
     cs = egglib.stats.ComputeStats()
-    cs.add_stats('thetaW', 'Pi', 'D', 'Hsd')
-    polyDict = cs.process_align(a, filtr=egglib.stats.filter_default)
-    statDict['theta'] = float(polyDict['thetaW'])/int(win)
-    statDict['pi'] = float(polyDict['Pi'])/int(win)
+    cs.add_stats('thetaW', 'Pi', 'D')
+    polyDict = cs.process_align(a)
+    statDict['theta'] = polyDict['thetaW']
+    statDict['pi'] = polyDict['Pi']
     statDict['tajimaD'] = polyDict['D']
-    statDict['H'] = polyDict['Hsd']
+    #statDict['FayWuH'] = polyDict['H']
     return statDict
 
-# assign argument values
 alignment, winWidth, winStep, outgroup = get_arguments(sys.argv[1:])
 
-# alignment file is required
 if alignment is None:
     usage()
     sys.exit()
 
-# write outfile containing header 
 outfile = open('windowStats_' + os.path.splitext(alignment)[0] + '.txt', 'w')
 outfile.write("Start\tStop\tTheta\tPi\tTajimasD\tFay&WuH\n")
-
-# read in alignment with egglib
 align = egglib.io.from_fasta(alignment)
-
-# ? something to do with the outgroup, must test to see this part is still working
+print(align.ns)
 for i in range(align.ns):
     align.get_sequence(i)
 if outgroup is not None:
     align.group(align.find(outgroup, strict = False), group = 999)
-
-# first window starts at zero, stops at winWidth
 start = 0
 stop = winWidth
-# used for plotting D across genome
+
 location = []
 TD = []
 
-# calculating stats for each window and writing to output 
 for window in align.slider(winWidth, winStep):
-    stats = calc_stats(window, winWidth)
-    outfile.write("%i\t%i\t%s\t%s\t%s\t%s\n" % (start, stop, stats['theta'],
-    stats['pi'], stats['tajimaD'], stats['H']))
-    location.append((start + stop)/2)
-    TD.append(stats['tajimaD'])
+    stats = calc_stats(window)
     start += winStep
     stop += winStep
+    outfile.write("%i\t%i\t%s\t%s\t%s\n" % (start, stop, stats['theta'],
+    stats['pi'], stats['tajimaD']))
+    location.append((start + stop)/2)
+    TD.append(stats['tajimaD'])
 outfile.close()
 
 plt.plot(location, TD)
