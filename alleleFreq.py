@@ -46,7 +46,7 @@ def filterMuts(vcf_list, dict_out, filter):
                     pos = info[1]
                     if pos not in filter:
                         count += 1
-                        if count % 100000 == 0:
+                        if count % 100 == 0:
                             print(str(count)+" mutations processed")
                         ref = info[3]
                         alt = info[4].split(",")[0]
