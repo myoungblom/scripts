@@ -1,0 +1,9 @@
+JOB fastq_dump fastq_dump.submit
+VARS fastq_dump accession="${run}"
+
+JOB spadesProkka denovo_assembly_and_annotation.submit
+VARS spadesProkka accession="${run}"
+VARS spadesProkka genus="Streptococcus"
+VARS spadesProkka species="mitis"
+
+PARENT fastq_dump CHILD spadesProkka

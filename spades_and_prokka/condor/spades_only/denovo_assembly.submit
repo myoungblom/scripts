@@ -1,0 +1,18 @@
+universe = vanilla
+executable = denovo_assembly.sh 
+arguments = "$(accession)"
+
+output = $(accession).out
+error = $(accession).err
+log = $(accession).log
+
+transfer_executable = TRUE
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(accession)_1.fastq.gz, $(accession)_2.fastq.gz, contig_filter.py
+
+request_cpus = 8
+request_memory = 16GB
+request_disk = 30GB
+
+queue

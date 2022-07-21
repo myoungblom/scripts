@@ -1,0 +1,2 @@
+JOB SPAdes denovo_assembly.submit
+VARS SPAdes accession="${run}"

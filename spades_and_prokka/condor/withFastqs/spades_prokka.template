@@ -1,0 +1,5 @@
+JOB assembly denovo_assembly.submit
+VARS assembly accession="${run}"
+VARS assembly genus="${genus}"
+VARS assembly species="${species}"
+VARS assembly gram="${gram}"
