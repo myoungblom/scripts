@@ -32,17 +32,14 @@ indexes = {}
 # make dictionary with binary phenotypes from scoary traits file
 total = 0
 with open(scoary, 'r') as scoaryFile:
+    firstline = next(scoaryFile)
+    indexed = firstline.strip().split(",").index(header)
     for line in scoaryFile:
-        line = line.strip("\n")
-        line = line.strip("\r")
-        parser = line.split(",")
-        if line.startswith(","):
-            indexed = parser.index(header)
-        elif not line.startswith(","):
-            total += 1
-            value = parser[indexed]
-            isolate = parser[0]
-            phenotypes[isolate] = value
+        parser = line.strip("\n").strip("\r").split(",")
+        total += 1
+        value = parser[indexed]
+        isolate = parser[0]
+        phenotypes[isolate] = value
 
 # make dictionary with indices from vcf file
 with open(vcfFile, 'r') as vcf:
