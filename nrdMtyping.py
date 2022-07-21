@@ -19,9 +19,9 @@ outFile = open(outFileName, 'w')
 
 # read sequences to find isolates with ancestral allele
 for oralis_seq in SeqIO.parse(inFile, "fasta"):
-	if oralis_seq.seq[234 - 1] == "C":
+	if oralis_seq.seq[234 - 1] in ["C","c"]:
 		outFile.write(oralis_seq.id + '\tC\n')
-	elif oralis_seq.seq[234-1] == "T":
+	elif oralis_seq.seq[234-1] in ["T","t"]:
 		outFile.write(oralis_seq.id + "\tT\n")
 
 outFile.close()
