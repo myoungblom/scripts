@@ -1,52 +1,40 @@
-scripts
+scripts written by M. Youngblom
 =======
 
-Scripts for various file manipulations & conversions.
-Current Versions:
-	Python 2.7.3
-	Biopython 1.63
+Most python scripts written for Python3, some legacy scripts may be present.
 
-### aasTyping.py
-Identifies S. saprophyticus sequences in mutli-fasta, reference-guided alignment file which\
-have the ancestral AAS allele ("A" at position 1,811,777)
-Requirements: Biopython\
-Usage: aasTyping.py inputfile.fasta
+### annots
+annotation file (gff,gtf,bed,etc) manipulations
 
-### contigFilter.py
+### fastas
+manipulate fasta files
 
-### contigLength.py
-Ouputs length of contigs in a draft genome fasta file\
-Requirements: Biopython\
-Usage: contigLength.py inputfile.fasta outputfile
+### gwas
+scripts for running and parsing gwas data (fst outlier, treeWAS, etc)
 
-### gyrBTyping.py
-Identifies viridans group streptococci based on DNA gyrase subunit B amino acid sequences\
-Requirements: Biopython\
-Usage: gyrBTyping.py inputfile.fasta outputfile
+### miscs
+no other home :'(
 
-### mummerToFasta.py
-Takes in mummer output from 'show-snps -T' and produces fasta sequence using reference\
-Requirements: Biopython\
-Usage: mummerToFasta.py SNPfile outputfile reference
+### pangenomes
+summarize & explore pangenome analysis results from Roary
 
-### printSeq.py
-Prints base at given position in fasta file sequence\
-Requirements: Biopython\
-Usage: printSeq.py inputfile.fasta position
+### poolseq
+for working with pool-seq data from populations
 
-### pullFromFasta.py
-Pulls specific sequence(s) from multifasta file\
-Requirements: Biopython\
-Usage: pullFromFasta.py inputfile.fasta ids or text file to remove
+### popstats
+calculate population genetics statistics
 
-### removeFromFasta.py
-Removes specified sequence(s) from fasta file\
-Requirements: Biopython\
-Usage: removeFromFasta.py inputfile.fasta output fasta ids or text file to remove
+### recombination
+scripts to annotate and summarize recombinant tracts
 
-### searchAndReplace.py
+### rnaseq
+scripts for parsing output of DE analysis. See [RNAseq repo](https://github.com/myoungblom/RNAseq) for analysis scripts
 
-### splitFasta.py
-Splits multifasta file into individual fasta files\
-Requirements: Biopython\
-Usage: splitFasta.py inputfile.fasta
+### seqdata
+download & manipulate sequence data
+
+### spades_and_prokka
+condor and bash scripts for denovo assembly and annotation with SPAdes and Prokka
+
+### vcfs
+vcf manipulators
