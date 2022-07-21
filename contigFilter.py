@@ -21,12 +21,14 @@ outFile = inFile.split(".")[0]+"_filtered.fasta"
 # filter out contigs that are <500bp and/or <5X coverage
 output = open(outFile, 'w')
 quality_contigs = []
-
+total = 0
 for contig in SeqIO.parse(inFile, "fasta"):
     coverage = float((contig.id).split("_")[-1])
     length = len(contig.seq)
+    total += length
     if length > 500 and coverage > 5.0:
             quality_contigs.append(contig)
 
+print("Total length: "+str(total))
 SeqIO.write(quality_contigs, outFile, "fasta")
 output.close()
